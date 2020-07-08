@@ -295,15 +295,30 @@ func main() {
 	fmt.Printf("use pointa: %d %d\n", n_try, m_try) // => use pointa: 20 10
 
 
-  // 353行目
 	var hex Hex = 100
 	fmt.Println(hex.String()) // => 64
 
 
-  // 366行目
 	var v T
 	(&v).f() // => hi
 	v.f()    // => hi 上と同じ意味
+
+
+	// ポインタ型を使ったメソッドで呼び出し元に変更を伝える
+	var num_me MyInt2
+	fmt.Println(num_me)
+	num_me.Inc()
+	fmt.Println(num_me)
+
+
+	// メソッド値 メソッドも値として使える　レシーバは束縛されており、メソッドへの動的な関数の代入はできない
+	method := hex.String
+	fmt.Println(method()) // => 64
+
+
+	// メソッド式 レシーバを第一引数とした関数になる
+	method2 := Hex.String
+	fmt.Printf("%T: %s\n", method2, method2(hex)) // => func(main.Hex) string: 64
 }
 
 // func 関数名(引数) 戻り値 {} で定義する
@@ -365,3 +380,8 @@ func (h Hex) String() string {
 */
 type T int
 func (t *T) f() { fmt.Println("hi") }
+
+
+// レシーバに変更を与える
+type MyInt2 int
+func (n *MyInt2) Inc() { *n++ } // ポインタ型で受け取ることでレシーバへの変更を呼び出し元に伝える
